@@ -1,13 +1,17 @@
 from django.db import models
 
-# Create your models here.
+class Generic(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Medicine(models.Model):
-    brand_name = models.CharField(max_length=100)
-    generic_name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    brand_name = models.CharField(max_length=255)
+    generic = models.ForeignKey(Generic, on_delete=models.CASCADE)
+    strength = models.CharField(max_length=100, blank=True, null=True)
+    manufacturer = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.brand_name
-
-    def __str__(self):
-        return self.generic_name
