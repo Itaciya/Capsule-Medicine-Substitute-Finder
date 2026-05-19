@@ -130,3 +130,25 @@ def compare_medicines(request, slug):
         'original': medicine,
         'alternatives': alts
     })
+
+
+@login_required
+def nearby_pharmacies(request, slug):
+    medicine = get_object_or_404(Medicine, slug=slug)
+    inventory = PharmacyInventory.objects.filter(medicine=medicine).select_related('pharmacy')
+    return render(request, 'pharmacies.html', {
+        'medicine': medicine,
+        'inventory': inventory
+    })
+@login_required
+def toggle_favorite(request, med_id):
+    medicine = get_object_or_404(Medicine, id=med_id)
+    fav, created = Favorite.objects.get_or_create(user=request.user, medicine=medicine)
+    if not created:
+        fav.delete()
+    return redirect('medicine_detail', slug=medicine.slug)
+
+@login_required
+def dashboard(request):
+    popular = Medicine.objects.order_by('-popularity_score')[:8]
+    return render(request, 'dashboard.html', {'popular': popular})
