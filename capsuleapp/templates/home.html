@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="hero text-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">Welcome to Capsule</h1>
+        <p class="lead mb-4">Find Medicine Substitutes & Nearby Pharmacies in Seconds</p>
+        <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+            Let's Get Started
+        </a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-5">Why Choose Capsule?</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h4>🔍 Smart Search</h4>
+            <p>Search by name or generic name</p>
+        </div>
+        <div class="col-md-4">
+            <h4>💊 Substitutes</h4>
+            <p>Find cheaper & equivalent medicines</p>
+        </div>
+        <div class="col-md-4">
+            <h4>📍 Nearby Pharmacies</h4>
+            <p>Check availability in real stores</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

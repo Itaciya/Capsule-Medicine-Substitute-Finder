@@ -1,36 +1,19 @@
+# capsuleapp/urls.py
 from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views
-from .views import search_medicine, alternatives
 
 urlpatterns = [
-
     path('', views.home, name='home'),
-
-    path('register/', views.register, name='register'),
-
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 
-    path(
-        'login/',
-        auth_views.LoginView.as_view(
-            template_name='capsuleapp/login.html'
-        ),
-        name='login'
-    ),
+    path('medicine/<slug:slug>/', views.medicine_detail, name='medicine_detail'),
+    path('alternatives/<slug:slug>/', views.alternatives, name='alternatives'),
+    path('compare/<slug:slug>/', views.compare_medicines, name='compare'),
+    path('pharmacies/<slug:slug>/', views.nearby_pharmacies, name='nearby_pharmacies'),
 
-    path(
-        'logout/',
-        auth_views.LogoutView.as_view(),
-        name='logout'
-    ),
-
-    # Medicine API
-    path('search/', search_medicine, name='search_medicine'),
-
-    path(
-        'alternatives/<int:medicine_id>/',
-        alternatives,
-        name='alternatives'
-    ),
+    path('search/', views.search_medicines, name='search'),
+    path('favorite/<int:med_id>/', views.toggle_favorite, name='toggle_favorite'),
 ]

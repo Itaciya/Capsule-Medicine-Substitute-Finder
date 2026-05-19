@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Alternatives for <span class="text-primary">{{ medicine.name }}</span></h2>
+    <p class="lead">Same Generic: <strong>{{ medicine.generic_name }}</strong></p>
+
+    <div class="row">
+        {% for alt in alternatives %}
+        <div class="col-md-4 mb-4">
+            <div class="card medicine-card h-100">
+                <div class="card-body">
+                    <h5>{{ alt.name }} ({{ alt.strength }})</h5>
+                    <p class="text-muted">{{ alt.manufacturer }}</p>
+                    <h5 class="text-success">৳ {{ alt.price }}</h5>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'medicine_detail' alt.slug %}" class="btn btn-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No alternatives found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

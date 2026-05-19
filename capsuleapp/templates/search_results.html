@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Search Results for "{{ query }}"</h2>
+
+    {% if results %}
+        <div class="row">
+            {% for med in results %}
+            <div class="col-md-4 mb-4">
+                <div class="card medicine-card h-100">
+                    {% if med.image %}
+                        <img src="{{ med.image.url }}" class="card-img-top" style="height: 160px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x160?text={{ med.name }}" class="card-img-top" style="height: 160px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5>{{ med.name }} ({{ med.strength }})</h5>
+                        <p class="text-muted">{{ med.generic_name }} • {{ med.manufacturer }}</p>
+                        <h5 class="text-success">৳ {{ med.price }}</h5>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'medicine_detail' med.slug %}" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No medicines found matching "{{ query }}". Try different keywords.
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
