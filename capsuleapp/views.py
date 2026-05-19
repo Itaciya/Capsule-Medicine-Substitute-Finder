@@ -1,68 +1,38 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rapidfuzz import fuzz
-
-from .models import Medicine
-from .serializers import MedicineSerializer
-
-
-# WEBSITE PAGES
-
-def home(request):
-    return render(request, 'capsuleapp/home.html')
-
-
-def register(request):
-    return render(request, 'capsuleapp/register.html')
-
-
-def dashboard(request):
-    return render(request, 'capsuleapp/dashboard.html')
-
-
-# API
-
-@api_view(['GET'])
-def search_medicine(request):
-
-    query = request.GET.get('q', '')
-
-    medicines = Medicine.objects.all()
-
-    matched = []
-
-    for med in medicines:
-
-        score = fuzz.ratio(
-            query.lower(),
-            med.brand_name.lower()
-        )
-
-        if query.lower() in med.brand_name.lower() or score > 60:
-            matched.append(med)
-
-    serializer = MedicineSerializer(matched, many=True)
-
-    return Response(serializer.data)
+from .models import Availability
 
 
 @api_view(['GET'])
-def alternatives(request, medicine_id):
+def compare_prices(request, medicine_name):
 
-    medicine = Medicine.objects.get(id=medicine_id)
+    medicines = Availability.objects.filter(
+        medicine__iexact=medicine_name,
+        in_stock=True,
+        price__isnull=False
+    ).select_related('pharmacy').order_by('price')
 
-    alternatives = Medicine.objects.filter(
-        generic=medicine.generic
-    ).exclude(id=medicine.id)
+    if not medicines.exists():
+        return Response({
+            "message": "No price data found"
+        })
 
-    serializer = MedicineSerializer(
-        alternatives,
-        many=True
-    )
+    cheapest = medicines.first()
+
+    result = []
+
+    for item in medicines:
+        result.append({
+            "medicine": item.medicine,
+            "pharmacy": item.pharmacy.name,
+            "location": item.pharmacy.location,
+            "price": float(item.price),
+            "is_cheapest": item.id == cheapest.id
+        })
 
     return Response({
-        "searched_medicine": MedicineSerializer(medicine).data,
-        "alternatives": serializer.data
+        "medicine": medicine_name,
+        "cheapest_price": float(cheapest.price),
+        "cheapest_pharmacy": cheapest.pharmacy.name,
+        "comparisons": result
     })

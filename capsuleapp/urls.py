@@ -33,4 +33,8 @@ urlpatterns = [
         alternatives,
         name='alternatives'
     ),
+    path(
+        'compare-prices/<str:medicine_name>/',
+         views.compare_prices
+        ),
 ]
