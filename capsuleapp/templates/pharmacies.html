@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Nearby Pharmacies for <span class="text-primary">{{ medicine.name }}</span></h2>
+
+    <div class="row">
+        {% for item in inventory %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ item.pharmacy.name }}</h5>
+                    <p>{{ item.pharmacy.address }}</p>
+                    <p><strong>Contact:</strong> {{ item.pharmacy.contact }}</p>
+                    <p><strong>Stock:</strong> {{ item.stock }} units</p>
+                    <p><strong>Price:</strong> ৳ {{ item.price_at_pharmacy|default:medicine.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No pharmacies have this medicine in stock right now.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+</body>
+</html>
