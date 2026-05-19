@@ -102,3 +102,31 @@ def toggle_favorite(request, med_id):
 def dashboard(request):
     popular = Medicine.objects.order_by('-popularity_score')[:8]
     return render(request, 'dashboard.html', {'popular': popular})
+
+def medicine_detail(request, slug):
+    medicine = get_object_or_404(Medicine, slug=slug)
+    is_favorite = False
+    if request.user.is_authenticated:
+        is_favorite = Favorite.objects.filter(user=request.user, medicine=medicine).exists()
+    return render(request, 'medicine_detail.html', {
+        'medicine': medicine,
+        'is_favorite': is_favorite
+    })
+
+def alternatives(request, slug):
+    medicine = get_object_or_404(Medicine, slug=slug)
+    alts = Medicine.objects.filter(
+        generic_name=medicine.generic_name
+    ).exclude(id=medicine.id)
+    return render(request, 'alternatives.html', {
+        'medicine': medicine,
+        'alternatives': alts
+    })
+
+def compare_medicines(request, slug):
+    medicine = get_object_or_404(Medicine, slug=slug)
+    alts = Medicine.objects.filter(generic_name=medicine.generic_name).exclude(id=medicine.id)[:5]
+    return render(request, 'compare.html', {
+        'original': medicine,
+        'alternatives': alts
+    })
