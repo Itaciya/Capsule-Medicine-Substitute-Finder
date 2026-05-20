@@ -1,58 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <h2>Welcome back, {{ user.username }} 👋</h2>
+<style>
+    /* Dashboard Styling - Matching Login/Signup */
+    .dashboard-section {
+        min-height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #f9fbf2 0%, #e8edd8 100%);
+        padding-top: 90px;
+        padding-bottom: 60px;
+    }
 
-    <!-- Search Bar -->
-    <div class="row my-4">
-        <div class="col-md-8 mx-auto">
-            <form action="{% url 'search' %}" method="GET">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control form-control-lg"
-                           placeholder="Search medicine name or generic name... (e.g. Napa)" required>
-                    <button class="btn btn-primary btn-lg" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    .welcome-text {
+        text-align: center;
+        color: #2d361c;
+        margin-bottom: 40px;
+    }
 
-    <h4 class="mb-3">Popular Medicines</h4>
-    <div class="row">
-        {% for med in popular %}
-        <div class="col-md-3 mb-4">
-            <div class="card medicine-card h-100">
-                {% if med.image %}
-                    <img src="{{ med.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
-                {% else %}
-                    <img src="https://via.placeholder.com/300x180?text={{ med.name }}" class="card-img-top" style="height: 180px; object-fit: cover;">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ med.name }} <small>({{ med.strength }})</small></h5>
-                    <p class="text-muted">{{ med.generic_name }}</p>
-                    <p class="fw-bold text-primary">৳ {{ med.price }}</p>
-                </div>
-                <div class="card-footer bg-white">
-                    <a href="{% url 'medicine_detail' med.slug %}" class="btn btn-outline-primary w-100">
-                        View Details
-                    </a>
-                </div>
+    /* Green & White Search Bar */
+    .search-input {
+        padding: 18px 20px !important;
+        border: 2px solid #e5e9d8 !important;
+        border-radius: 50px 0 0 50px !important;
+        font-size: 1.1rem;
+    }
+
+    .search-input:focus {
+        border-color: #98a46d !important;
+        box-shadow: 0 0 0 4px rgba(152, 164, 109, 0.2) !important;
+        outline: none;
+    }
+
+    .search-btn {
+        background: linear-gradient(135deg, #2d361c, #3e4b27) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 0 50px 50px 0 !important;
+        padding: 0 35px !important;
+        font-size: 1.1rem;
+    }
+
+    .search-btn:hover {
+        background: #1f2716 !important;
+        transform: scale(1.05);
+    }
+
+    /* Medicine Cards */
+    .medicine-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .medicine-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(45, 54, 28, 0.15);
+    }
+
+    .medicine-card .card-title {
+        color: #2d361c;
+        font-weight: 600;
+    }
+
+    .text-primary, .btn-outline-primary {
+        color: #98a46d !important;
+    }
+
+    .btn-outline-primary {
+        border-color: #98a46d !important;
+    }
+
+    .btn-outline-primary:hover {
+        background: #98a46d !important;
+        color: white !important;
+        border-color: #98a46d !important;
+    }
+
+    .card-footer {
+        background: white !important;
+        border-top: 1px solid #eee;
+    }
+</style>
+
+<section class="dashboard-section">
+    <div class="container">
+
+
+
+        <!-- Green Search Bar -->
+        <div class="row my-4">
+            <div class="col-md-8 mx-auto">
+                <form action="{% url 'search' %}" method="GET">
+                    <div class="input-group">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control search-input" 
+                               placeholder="Search medicine name or generic name... (e.g. Napa)" 
+                               required>
+                        <button class="btn search-btn" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-        {% endfor %}
+
+        <h4 class="mb-4 text-center" style="color: #2d361c;">Popular Medicines</h4>
+
+        <div class="row">
+            {% for med in popular %}
+            <div class="col-md-3 mb-4">
+                <div class="card medicine-card h-100">
+                    {% if med.image %}
+                        <img src="{{ med.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x180?text={{ med.name }}" 
+                             class="card-img-top" style="height: 180px; object-fit: cover;">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ med.name }} <small>({{ med.strength }})</small></h5>
+                        <p class="text-muted">{{ med.generic_name }}</p>
+                        <p class="fw-bold" style="color: #2d361c;">৳ {{ med.price }}</p>
+                    </div>
+                    
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'medicine_detail' med.slug %}" 
+                           class="btn btn-outline-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
-</div>
+</section>
 
 {% endblock %}
-
-</body>
-</html>

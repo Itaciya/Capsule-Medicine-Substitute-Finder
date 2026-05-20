@@ -1,52 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <h2>Compare Medicines</h2>
+<style>
+    .compare-section {
+        min-height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #f9fbf2 0%, #e8edd8 100%);
+        padding-top: 90px;
+        padding-bottom: 60px;
+    }
 
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Attribute</th>
-                <th>{{ original.name }}</th>
-                {% for alt in alternatives %}
-                <th>{{ alt.name }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Price</strong></td>
-                <td>৳ {{ original.price }}</td>
-                {% for alt in alternatives %}
-                <td>৳ {{ alt.price }}</td>
-                {% endfor %}
-            </tr>
-            <tr>
-                <td><strong>Manufacturer</strong></td>
-                <td>{{ original.manufacturer }}</td>
-                {% for alt in alternatives %}
-                <td>{{ alt.manufacturer }}</td>
-                {% endfor %}
-            </tr>
-            <tr>
-                <td><strong>Strength</strong></td>
-                <td>{{ original.strength }}</td>
-                {% for alt in alternatives %}
-                <td>{{ alt.strength }}</td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
-</div>
+    table {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    thead {
+        background: #2d361c !important;
+    }
+
+    th, td {
+        padding: 16px 12px;
+    }
+</style>
+
+<section class="compare-section">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: #2d361c;">Compare Medicines</h2>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Attribute</th>
+                    <th>{{ original.name }}</th>
+                    {% for alt in alternatives %}
+                    <th>{{ alt.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Price</strong></td>
+                    <td>৳ {{ original.price }}</td>
+                    {% for alt in alternatives %}
+                    <td>৳ {{ alt.price }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td><strong>Manufacturer</strong></td>
+                    <td>{{ original.manufacturer }}</td>
+                    {% for alt in alternatives %}
+                    <td>{{ alt.manufacturer }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td><strong>Strength</strong></td>
+                    <td>{{ original.strength }}</td>
+                    {% for alt in alternatives %}
+                    <td>{{ alt.strength }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 
 {% endblock %}
-</body>
-</html>

@@ -1,36 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <h2>Nearby Pharmacies for <span class="text-primary">{{ medicine.name }}</span></h2>
+<style>
+    .pharmacy-section {
+        min-height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #f9fbf2 0%, #e8edd8 100%);
+        padding-top: 90px;
+        padding-bottom: 60px;
+    }
 
-    <div class="row">
-        {% for item in inventory %}
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5>{{ item.pharmacy.name }}</h5>
-                    <p>{{ item.pharmacy.address }}</p>
-                    <p><strong>Contact:</strong> {{ item.pharmacy.contact }}</p>
-                    <p><strong>Stock:</strong> {{ item.stock }} units</p>
-                    <p><strong>Price:</strong> ৳ {{ item.price_at_pharmacy|default:medicine.price }}</p>
+    .pharmacy-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+    }
+
+    .pharmacy-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(45, 54, 28, 0.12);
+    }
+</style>
+
+<section class="pharmacy-section">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: #2d361c;">
+            Nearby Pharmacies for <span style="color: #98a46d;">{{ medicine.name }}</span>
+        </h2>
+
+        <div class="row">
+            {% for item in inventory %}
+            <div class="col-md-6 mb-4">
+                <div class="card pharmacy-card">
+                    <div class="card-body">
+                        <h5>{{ item.pharmacy.name }}</h5>
+                        <p>{{ item.pharmacy.address }}</p>
+                        <p><strong>Contact:</strong> {{ item.pharmacy.contact }}</p>
+                        <p><strong>Stock:</strong> {{ item.stock }} units</p>
+                        <p><strong>Price:</strong> ৳ {{ item.price_at_pharmacy|default:medicine.price }}</p>
+                    </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    No pharmacies have this medicine in stock right now.
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>No pharmacies have this medicine in stock right now.</p>
-        {% endfor %}
     </div>
-</div>
+</section>
 
 {% endblock %}
-
-</body>
-</html>

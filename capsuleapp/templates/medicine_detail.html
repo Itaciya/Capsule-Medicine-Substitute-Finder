@@ -1,58 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Left: Image & Basic Info -->
-        <div class="col-md-5">
-            {% if medicine.image %}
-                <img src="{{ medicine.image.url }}" class="img-fluid rounded shadow" alt="{{ medicine.name }}">
-            {% else %}
-                <img src="https://via.placeholder.com/500x400?text={{ medicine.name }}" class="img-fluid rounded shadow" alt="{{ medicine.name }}">
-            {% endif %}
-        </div>
+<style>
+    .detail-section {
+        min-height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #f9fbf2 0%, #e8edd8 100%);
+        padding-top: 90px;
+        padding-bottom: 60px;
+    }
 
-        <!-- Right: Details -->
-        <div class="col-md-7">
-            <h1>{{ medicine.name }} <small class="text-muted">({{ medicine.strength }})</small></h1>
-            <h5 class="text-primary">{{ medicine.generic_name }}</h5>
-            <p><strong>Manufacturer:</strong> {{ medicine.manufacturer }}</p>
-            <p><strong>Category:</strong> {{ medicine.category }}</p>
-            <h3 class="text-success">৳ {{ medicine.price }}</h3>
+    .medicine-detail-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e9d8;
+        overflow: hidden;
+    }
 
-            <div class="mt-4">
-                <a href="{% url 'alternatives' medicine.slug %}" class="btn btn-outline-primary btn-lg me-2">
-                    <i class="fas fa-pills"></i> View Alternatives
-                </a>
-                <a href="{% url 'compare' medicine.slug %}" class="btn btn-outline-info btn-lg me-2">
-                    <i class="fas fa-balance-scale"></i> Compare
-                </a>
-                <a href="{% url 'nearby_pharmacies' medicine.slug %}" class="btn btn-success btn-lg">
-                    <i class="fas fa-store"></i> Nearby Pharmacies
-                </a>
+    .detail-image {
+        height: 380px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+    }
+
+    .detail-title {
+        color: #2d361c;
+        font-weight: 700;
+    }
+
+    .text-primary, .btn-outline-primary {
+        color: #98a46d !important;
+    }
+
+    .btn-outline-primary {
+        border-color: #98a46d !important;
+    }
+
+    .btn-outline-primary:hover {
+        background: #98a46d !important;
+        color: white !important;
+    }
+
+    .btn-success {
+        background: #2d361c !important;
+        border: none !important;
+    }
+
+    .btn-success:hover {
+        background: #3e4b27 !important;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-card h5 {
+        color: #2d361c;
+        border-bottom: 2px solid #98a46d;
+        padding-bottom: 10px;
+    }
+</style>
+
+<section class="detail-section">
+    <div class="container">
+
+        <div class="medicine-detail-card">
+            <div class="row g-0">
+                <!-- Left: Image -->
+                <div class="col-md-5">
+                    {% if medicine.image %}
+                        <img src="{{ medicine.image.url }}" 
+                             class="detail-image img-fluid w-100" 
+                             alt="{{ medicine.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x400?text={{ medicine.name }}" 
+                             class="detail-image img-fluid w-100" 
+                             alt="{{ medicine.name }}">
+                    {% endif %}
+                </div>
+
+                <!-- Right: Main Info -->
+                <div class="col-md-7 p-5">
+                    <h1 class="detail-title">{{ medicine.name }} 
+                        <small class="text-muted">({{ medicine.strength }})</small>
+                    </h1>
+                    
+                    <h5 class="text-primary mb-3">{{ medicine.generic_name }}</h5>
+                    
+                    <p><strong>Manufacturer:</strong> {{ medicine.manufacturer }}</p>
+                    <p><strong>Category:</strong> {{ medicine.category }}</p>
+                    
+                    <h3 class="text-success fw-bold">৳ {{ medicine.price }}</h3>
+
+                    <div class="mt-4">
+                        <a href="{% url 'alternatives' medicine.slug %}" 
+                           class="btn btn-outline-primary btn-lg me-2">
+                            <i class="fas fa-pills"></i> View Alternatives
+                        </a>
+                        <a href="{% url 'compare' medicine.slug %}" 
+                           class="btn btn-outline-primary btn-lg me-2">
+                            <i class="fas fa-balance-scale"></i> Compare
+                        </a>
+                        <a href="{% url 'nearby_pharmacies' medicine.slug %}" 
+                           class="btn btn-success btn-lg">
+                            <i class="fas fa-store"></i> Nearby Pharmacies
+                        </a>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'toggle_favorite' medicine.id %}"
+                           class="btn btn-outline-danger mt-3">
+                            ❤️ {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-
-            {% if user.is_authenticated %}
-            <a href="{% url 'toggle_favorite' medicine.id %}" class="btn btn-outline-danger mt-3">
-                ❤️ {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
-            </a>
-            {% endif %}
         </div>
-    </div>
 
-    <!-- Detailed Information -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h4>Detailed Information</h4>
-            <div class="card">
-                <div class="card-body">
+        <!-- Detailed Information -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="info-card p-5">
+                    <h4 class="mb-4">Detailed Information</h4>
+
                     <h5>Description</h5>
                     <p>{{ medicine.description|default:"No description available." }}</p>
 
@@ -70,9 +142,8 @@
                 </div>
             </div>
         </div>
+
     </div>
-</div>
+</section>
 
 {% endblock %}
-</body>
-</html>
