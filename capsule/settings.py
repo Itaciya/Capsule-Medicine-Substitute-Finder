@@ -31,6 +31,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '394877716895945',
     'API_SECRET': '6S5cw4qDmt-qp47XUe0zhRYtEYU',
 }
+
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
