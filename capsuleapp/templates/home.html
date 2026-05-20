@@ -1,10 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 
-<div class="hero text-center">
+<!-- Hero Section - More Transparent Overlay -->
+<div style="height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.5)),
+                       url('{% static 'images/hero-bg.jpg' %}') center/cover no-repeat fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;">
+
     <div class="container">
         <h1 class="display-3 fw-bold mb-3">Welcome to Capsule</h1>
-        <p class="lead mb-4">Find Medicine Substitutes & Nearby Pharmacies in Seconds</p>
+        <p class="lead fs-4 mb-4">Find Medicine Substitutes & Nearby Pharmacies in Seconds</p>
         <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
             Let's Get Started
         </a>
@@ -30,3 +48,5 @@
 </div>
 
 {% endblock %}
+</body>
+</html>

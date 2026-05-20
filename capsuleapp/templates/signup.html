@@ -1,26 +1,142 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h3 class="text-center mb-4">Create Account</h3>
+<style>
+    .auth-section {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f9fbf2 0%, #e8edd8 100%);
+        padding-top: 90px;        /* Card lower, away from navbar */
+        padding-bottom: 40px;
+    }
 
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
-                    </form>
+    .auth-card {
+        background: white;
+        width: 100%;
+        max-width: 460px;
+        padding: 45px 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e9d8;
+    }
 
-                    <p class="text-center mt-3">
-                        Already have an account? <a href="{% url 'login' %}">Login</a>
-                    </p>
-                </div>
+    .auth-title {
+        text-align: center;
+        font-size: 2.1rem;
+        margin-bottom: 30px;
+        color: #2d361c;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #2d361c;
+    }
+
+    .form-control {
+        padding: 12px 15px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 6px !important;
+    }
+
+    .form-control:focus {
+        border-color: #98a46d !important;
+        box-shadow: 0 0 0 3px rgba(152, 164, 109, 0.2) !important;
+    }
+
+    .password-requirements {
+        background: #f9fbf2;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #98a46d;
+        font-size: 0.9rem;
+        margin: 15px 0;
+    }
+
+    .btn-signup {
+        width: 100%;
+        padding: 14px;
+        background: #2d361c;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .btn-signup:hover {
+        background: #3e4b27;
+    }
+
+    .switch-auth {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .switch-auth a {
+        color: #98a46d;
+        font-weight: 600;
+    }
+</style>
+
+<section class="auth-section">
+    <div class="auth-card">
+        <h2 class="auth-title">Create Account</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" required>
+                <small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password1" class="form-control" required>
+            </div>
+
+            <ul class="password-requirements">
+                <li>Your password can't be too similar to your other personal information.</li>
+                <li>Your password must contain at least 8 characters.</li>
+                <li>Your password can't be a commonly used password.</li>
+                <li>Your password can't be entirely numeric.</li>
+            </ul>
+
+            <div class="form-group">
+                <label>Password confirmation</label>
+                <input type="password" name="password2" class="form-control" required>
+                <small>Enter the same password as before, for verification.</small>
+            </div>
+
+            <button type="submit" class="btn btn-signup">Sign Up</button>
+        </form>
+
+        <p class="switch-auth">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </p>
     </div>
-</div>
+</section>
 
 {% endblock %}
