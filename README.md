@@ -1,5 +1,5 @@
 # 💊 Capsule Medicine Substitute Finder
-
+🔗 Live Demo: https://capsule-dykx.onrender.com/
 A Django-based web application that helps users easily find substitute medicines for a given capsule. This project is useful when a specific medicine is unavailable, allowing users to quickly discover alternative options.
 
 ---
