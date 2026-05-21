@@ -1,4 +1,3 @@
-# capsuleapp/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -24,13 +23,16 @@ def signup(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
         user = authenticate(request, username=username, password=password)
-        if user:
+        if user is not None:
             login(request, user)
             return redirect('dashboard')
-        messages.error(request, "Invalid credentials")
+        else:
+            messages.error(request, "Invalid username or password")
+    
     return render(request, 'login.html')
 
 def logout_view(request):
@@ -47,6 +49,7 @@ def medicine_detail(request, slug):
     is_favorite = False
     if request.user.is_authenticated:
         is_favorite = Favorite.objects.filter(user=request.user, medicine=medicine).exists()
+    
     return render(request, 'medicine_detail.html', {
         'medicine': medicine,
         'is_favorite': is_favorite
@@ -57,6 +60,7 @@ def alternatives(request, slug):
     alts = Medicine.objects.filter(
         generic_name=medicine.generic_name
     ).exclude(id=medicine.id)
+    
     return render(request, 'alternatives.html', {
         'medicine': medicine,
         'alternatives': alts
@@ -64,7 +68,10 @@ def alternatives(request, slug):
 
 def compare_medicines(request, slug):
     medicine = get_object_or_404(Medicine, slug=slug)
-    alts = Medicine.objects.filter(generic_name=medicine.generic_name).exclude(id=medicine.id)[:5]
+    alts = Medicine.objects.filter(
+        generic_name=medicine.generic_name
+    ).exclude(id=medicine.id)[:5]
+    
     return render(request, 'compare.html', {
         'original': medicine,
         'alternatives': alts
@@ -74,6 +81,7 @@ def compare_medicines(request, slug):
 def nearby_pharmacies(request, slug):
     medicine = get_object_or_404(Medicine, slug=slug)
     inventory = PharmacyInventory.objects.filter(medicine=medicine).select_related('pharmacy')
+    
     return render(request, 'pharmacies.html', {
         'medicine': medicine,
         'inventory': inventory
@@ -82,73 +90,22 @@ def nearby_pharmacies(request, slug):
 def search_medicines(request):
     query = request.GET.get('q', '')
     results = Medicine.objects.none()
+    
     if query:
         results = Medicine.objects.filter(
             Q(name__icontains=query) |
             Q(generic_name__icontains=query) |
             Q(manufacturer__icontains=query)
         )
+    
     return render(request, 'search_results.html', {'results': results, 'query': query})
 
 @login_required
 def toggle_favorite(request, med_id):
     medicine = get_object_or_404(Medicine, id=med_id)
     fav, created = Favorite.objects.get_or_create(user=request.user, medicine=medicine)
+    
     if not created:
         fav.delete()
+    
     return redirect('medicine_detail', slug=medicine.slug)
-
-@login_required
-def dashboard(request):
-    popular = Medicine.objects.order_by('-popularity_score')[:8]
-    return render(request, 'dashboard.html', {'popular': popular})
-
-def medicine_detail(request, slug):
-    medicine = get_object_or_404(Medicine, slug=slug)
-    is_favorite = False
-    if request.user.is_authenticated:
-        is_favorite = Favorite.objects.filter(user=request.user, medicine=medicine).exists()
-    return render(request, 'medicine_detail.html', {
-        'medicine': medicine,
-        'is_favorite': is_favorite
-    })
-
-def alternatives(request, slug):
-    medicine = get_object_or_404(Medicine, slug=slug)
-    alts = Medicine.objects.filter(
-        generic_name=medicine.generic_name
-    ).exclude(id=medicine.id)
-    return render(request, 'alternatives.html', {
-        'medicine': medicine,
-        'alternatives': alts
-    })
-
-def compare_medicines(request, slug):
-    medicine = get_object_or_404(Medicine, slug=slug)
-    alts = Medicine.objects.filter(generic_name=medicine.generic_name).exclude(id=medicine.id)[:5]
-    return render(request, 'compare.html', {
-        'original': medicine,
-        'alternatives': alts
-    })
-
-
-@login_required
-def nearby_pharmacies(request, slug):
-    medicine = get_object_or_404(Medicine, slug=slug)
-    inventory = PharmacyInventory.objects.filter(medicine=medicine).select_related('pharmacy')
-    return render(request, 'pharmacies.html', {
-        'medicine': medicine,
-        'inventory': inventory
-    })
-@login_required
-def toggle_favorite(request, med_id):
-    medicine = get_object_or_404(Medicine, id=med_id)
-    fav, created = Favorite.objects.get_or_create(user=request.user, medicine=medicine)
-    if not created:
-        fav.delete()
-    return redirect('medicine_detail', slug=medicine.slug)
-
-@login_required
-def dashboard(request):
-    popular = Medicine.objects.order_by('-popularity_score')[:8]
-    return render(request, 'dashboard.html', {'popular': popular})
