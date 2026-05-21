@@ -22,5 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('create-admin/', views.create_admin),
     path('', include('capsuleapp.urls')),
 ] 

@@ -5,7 +5,17 @@ from django.contrib import messages
 from django.db.models import Q
 from .models import Medicine, PharmacyInventory, Favorite
 from .forms import CustomUserCreationForm
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
+def create_admin(request):
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser(
+            'Cap',
+            '23201154@uap-bd',
+            'cap@148'
+        )
+    return HttpResponse("admin created")
 def home(request):
     return render(request, 'home.html')
 
