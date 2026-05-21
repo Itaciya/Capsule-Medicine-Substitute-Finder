@@ -7,7 +7,7 @@ from .models import Medicine, PharmacyInventory, Favorite
 from .forms import CustomUserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from . import views
+
 
 def create_admin(request):
     if not User.objects.filter(username='admin').exists():
